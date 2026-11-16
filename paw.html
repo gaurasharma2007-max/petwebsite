@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pawsome Haven | Pet Adoption & Care Portal</title>
+  
+  <!-- Tailwind CSS for styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+    .fade-in { animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen">
+
+  <!-- ==================== HEADER / NAVBAR ==================== -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        
+        <!-- Brand Logo -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+          <div class="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center text-white shadow-md">
+            <i class="fa-solid fa-paw text-xl"></i>
+          </div>
+          <span class="font-bold text-xl tracking-tight text-slate-900">Pawsome<span class="text-amber-500">Haven</span></span>
+        </div>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden md:flex items-center space-x-1 font-medium text-sm text-slate-600">
+          <button onclick="navigateTo('home')" id="nav-home" class="nav-btn px-3 py-2 rounded-lg hover:text-amber-600 transition">Home</button>
+          <button onclick="navigateTo('adopt')" id="nav-adopt" class="nav-btn px-3 py-2 rounded-lg hover:text-amber-600 transition">Adopt A Pet</button>
+          <button onclick="navigateTo('care')" id="nav-care" class="nav-btn px-3 py-2 rounded-lg hover:text-amber-600 transition">Care Tips</button>
+          <button onclick="navigateTo('application')" id="nav-application" class="nav-btn px-3 py-2 rounded-lg hover:text-amber-600 transition">Adoption Form</button>
+          <button onclick="navigateTo('stories')" id="nav-stories" class="nav-btn px-3 py-2 rounded-lg hover:text-amber-600 transition">Success Stories</button>
+          <button onclick="navigateTo('contact')" id="nav-contact" class="nav-btn px-3 py-2 rounded-lg hover:text-amber-600 transition">Contact Us</button>
+        </nav>
+
+        <!-- Header Actions: Favorites Counter -->
+        <div class="hidden md:flex items-center gap-3">
+          <button onclick="navigateTo('adopt'); setFavoriteFilter(true);" class="relative p-2 text-slate-600 hover:text-red-500 transition">
+            <i class="fa-solid fa-heart text-xl"></i>
+            <span id="fav-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow">0</span>
+          </button>
+          <button onclick="navigateTo('adopt')" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-sm">
+            Adopt Now
+          </button>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden flex items-center gap-3">
+          <button onclick="navigateTo('adopt'); setFavoriteFilter(true);" class="relative p-2 text-slate-600">
+            <i class="fa-solid fa-heart text-xl"></i>
+            <span id="mobile-fav-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+          </button>
+          <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2 text-slate-600 focus:outline-none">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-200 px-4 pt-2 pb-4 space-y-1">
+      <button onclick="navigateTo('home'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md font-medium text-slate-700 hover:bg-amber-50">Home</button>
+      <button onclick="navigateTo('adopt'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md font-medium text-slate-700 hover:bg-amber-50">Adopt A Pet</button>
+      <button onclick="navigateTo('care'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md font-medium text-slate-700 hover:bg-amber-50">Care Tips</button>
+      <button onclick="navigateTo('application'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md font-medium text-slate-700 hover:bg-amber-50">Adoption Form</button>
+      <button onclick="navigateTo('stories'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md font-medium text-slate-700 hover:bg-amber-50">Success Stories</button>
+      <button onclick="navigateTo('contact'); toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-md font-medium text-slate-700 hover:bg-amber-50">Contact Us</button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT AREA ==================== -->
+  <main class="flex-grow">
+
+    <!-- PAGE 1: HOME -->
+    <section id="page-home" class="page-section active fade-in">
+      <div class="relative bg-amber-50 overflow-hidden py-16 lg:py-24 border-b border-amber-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+              <span class="inline-block bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                <i class="fa-solid fa-heart text-red-500 mr-1"></i> Give Love, Get Love
+              </span>
+              <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 leading-tight">
+                Find Your New Best Friend Today.
+              </h1>
+              <p class="text-lg text-slate-600 leading-relaxed">
+                Every pet deserves a loving family. Explore our rescued dogs, cats, and small pets looking for safe home.
+              </p>
+              <div class="flex flex-wrap gap-4 pt-2">
+                <button onclick="navigateTo('adopt')" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-amber-500/25 transition">
+                  Browse Pets
+                </button>
+                <button onclick="navigateTo('application')" class="bg-white hover:bg-slate-50 text-slate-700 font-bold px-6 py-3 rounded-xl border border-slate-200 transition">
+                  Start Adoption
+                </button>
+              </div>
+            </div>
+            <div class="relative flex justify-center">
+              <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=800&q=80" alt="Happy Golden Retriever" class="rounded-3xl shadow-2xl object-cover h-[400px] w-full max-w-md">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="py-12 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="text-3xl font-bold text-amber-500">1,200+</div>
+              <div class="text-sm font-medium text-slate-500 mt-1">Pets Adopted</div>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="text-3xl font-bold text-amber-500">100%</div>
+              <div class="text-sm font-medium text-slate-500 mt-1">Health Checked</div>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="text-3xl font-bold text-amber-500">45+</div>
+              <div class="text-sm font-medium text-slate-500 mt-1">Active Rescue Partners</div>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="text-3xl font-bold text-amber-500">24/7</div>
+              <div class="text-sm font-medium text-slate-500 mt-1">Support & Guidance</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 2: ADOPT (PET LIST) -->
+    <section id="page-adopt" class="page-section fade-in py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <h2 class="text-3xl font-extrabold text-slate-900">Meet Our Friends</h2>
+          <p class="text-slate-600 mt-2">Filter through available pets by species, age, or search keyword.</p>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-200 mb-8 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- Search Input -->
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-400"></i>
+              <input type="text" id="filter-search" oninput="applyFilters()" placeholder="Search pet name or breed..." class="w-full pl-9 pr-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm">
+            </div>
+
+            <!-- Pet Type Filter -->
+            <div>
+              <select id="filter-type" onchange="applyFilters()" class="w-full py-2.5 px-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm">
+                <option value="all">All Types</option>
+                <option value="Dog">Dogs</option>
+                <option value="Cat">Cats</option>
+                <option value="Small">Small Pets</option>
+              </select>
+            </div>
+
+            <!-- Age Filter -->
+            <div>
+              <select id="filter-age" onchange="applyFilters()" class="w-full py-2.5 px-3 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm">
+                <option value="all">All Ages</option>
+                <option value="Young">Young (0 - 1.5 yrs)</option>
+                <option value="Adult">Adult (1.5 - 5 yrs)</option>
+                <option value="Senior">Senior (5+ yrs)</option>
+              </select>
+            </div>
+
+            <!-- Favorites Toggle -->
+            <div>
+              <button id="favorite-toggle-btn" onclick="toggleFavoritesOnly()" class="w-full py-2.5 px-3 rounded-lg border border-slate-200 text-slate-700 font-medium text-sm flex items-center justify-center gap-2 hover:bg-slate-50 transition">
+                <i class="fa-solid fa-heart text-red-500"></i>
+                <span id="fav-toggle-text">Show Favorites Only</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Dynamic Pet Cards Grid -->
+        <div id="pets-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        
+        <!-- Empty Results Message -->
+        <div id="no-pets-msg" class="hidden text-center py-12">
+          <i class="fa-solid fa-paw text-4xl text-slate-300 mb-3"></i>
+          <h3 class="text-lg font-bold text-slate-700">No matching pets found</h3>
+          <p class="text-slate-500 text-sm mt-1">Try resetting your filter parameters or search term.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PAGE 3: PET PROFILE MODAL / DETAIL -->
+    <div id="pet-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl relative max-h-[90vh] flex flex-col">
+        <button onclick="closePetModal()" class="absolute top-4 right-4 bg-white/80 hover:bg-white text-slate-600 rounded-full w-8 h-8 flex items-center justify-center z-10 shadow">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div id="pet-modal-content" class="overflow-y-auto"></div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: CARE TIPS -->
+    <section id="page-care" class="page-section fade-in py-10">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl font-extrabold text-slate-900">Pet Care Guide & Checklist</h2>
+          <p class="text-slate-600 mt-2">Essential guidelines for bringing home a new companion.</p>
+        </div>
+
+        <!-- Care Category Tabs -->
+        <div class="flex justify-center border-b border-slate-200 mb-8 space-x-4">
+          <button onclick="switchCareTab('dogs')" id="care-tab-dogs" class="care-tab-btn pb-3 px-4 font-bold text-sm border-b-2 border-amber-500 text-amber-600">Dog Care</button>
+          <button onclick="switchCareTab('cats')" id="care-tab-cats" class="care-tab-btn pb-3 px-4 font-bold text-sm border-b-2 border-transparent text-slate-500 hover:text-slate-800">Cat Care</button>
+        </div>
+
+        <!-- Dog Care Content -->
+        <div id="care-content-dogs" class="care-tab-content space-y-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 class="text-lg font-bold text-slate-900 mb-3"><i class="fa-solid fa-bone text-amber-500 mr-2"></i> Daily Routines & Nutrition</h3>
+            <ul class="space-y-2 text-slate-600 text-sm">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> Feed balanced age-appropriate food twice daily.</li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> Provide fresh, clean drinking water at all times.</li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> Schedule at least 30-60 minutes of daily exercise or outdoor walks.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Cat Care Content -->
+        <div id="care-content-cats" class="care-tab-content hidden space-y-6">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 class="text-lg font-bold text-slate-900 mb-3"><i class="fa-solid fa-cat text-amber-500 mr-2"></i> Litter Box & Environment</h3>
+            <ul class="space-y-2 text-slate-600 text-sm">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> Scoop litter box daily; full litter refresh weekly.</li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> Provide scratching posts to support natural clawing instincts.</li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1"></i> Offer elevated perches or quiet spaces for rest.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PAGE 5: MULTI-STEP ADOPTION FORM -->
+    <section id="page-application" class="page-section fade-in py-10">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-extrabold text-slate-900">Adoption Application</h2>
+          <p class="text-slate-600 mt-1">Complete this multi-step form to register your interest.</p>
+        </div>
+
+        <!-- Form Container -->
+        <div class="bg-white p-6 sm:p-10 rounded-2xl shadow-sm border border-slate-200">
+          
+          <!-- Progress Bar Steps -->
+          <div class="flex items-center justify-between mb-8 relative">
+            <div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-100 z-0"></div>
+            <div id="progress-line" class="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-amber-500 z-0 transition-all duration-300" style="width: 0%;"></div>
+
+            <!-- Step 1 Indicator -->
+            <div class="relative z-10 flex flex-col items-center">
+              <div id="step-dot-1" class="w-8 h-8 rounded-full bg-amber-500 text-white font-bold flex items-center justify-center text-sm shadow">1</div>
+              <span class="text-xs font-semibold text-slate-600 mt-2">Personal</span>
+            </div>
+            <!-- Step 2 Indicator -->
+            <div class="relative z-10 flex flex-col items-center">
+              <div id="step-dot-2" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-sm">2</div>
+              <span class="text-xs font-semibold text-slate-600 mt-2">Home Life</span>
+            </div>
+            <!-- Step 3 Indicator -->
+            <div class="relative z-10 flex flex-col items-center">
+              <div id="step-dot-3" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-sm">3</div>
+              <span class="text-xs font-semibold text-slate-600 mt-2">Confirmation</span>
+            </div>
+          </div>
+
+          <form id="adoption-form" onsubmit="handleFormSubmit(event)">
+            
+            <!-- STEP 1: PERSONAL DETAILS -->
+            <div id="form-step-1" class="form-step space-y-4">
+              <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Step 1: Contact Details</h3>
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Select Pet</label>
+                <select id="form-pet-select" class="w-full p-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm"></select>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-semibold text-slate-700 mb-1">Full Name *</label>
+                  <input type="text" id="applicant-name" required class="w-full p-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm" placeholder="John Doe">
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-slate-700 mb-1">Email Address *</label>
+                  <input type="email" id="applicant-email" required class="w-full p-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm" placeholder="john@example.com">
+                </div>
+              </div>
+              <div class="flex justify-end pt-4">
+                <button type="button" onclick="goToFormStep(2)" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-lg transition">Next Step <i class="fa-solid fa-arrow-right ml-1"></i></button>
+              </div>
+            </div>
+
+            <!-- STEP 2: LIVING ARRANGEMENTS -->
+            <div id="form-step-2" class="form-step hidden space-y-4">
+              <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Step 2: Living Environment</h3>
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Housing Type *</label>
+                <select id="housing-type" required class="w-full p-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm">
+                  <option value="Apartment">Apartment</option>
+                  <option value="House (Fenced Yard)">House with Fenced Yard</option>
+                  <option value="House (No Yard)">House without Yard</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-slate-700 mb-1">Prior Pet Experience?</label>
+                <textarea id="prior-exp" rows="3" class="w-full p-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm" placeholder="Briefly describe your previous experience caring for pets..."></textarea>
+              </div>
+              <div class="flex justify-between pt-4">
+                <button type="button" onclick="goToFormStep(1)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-2.5 rounded-lg transition"><i class="fa-solid fa-arrow-left mr-1"></i> Back</button>
+                <button type="button" onclick="goToFormStep(3)" class="bg-amber-500 hover:bg-amber-600 text-white font-bold px-6 py-2.5 rounded-lg transition">Review Details <i class="fa-solid fa-arrow-right ml-1"></i></button>
+              </div>
+            </div>
+
+            <!-- STEP 3: REVIEW & SUBMIT -->
+            <div id="form-step-3" class="form-step hidden space-y-4">
+              <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Step 3: Summary Confirmation</h3>
+              <div class="bg-slate-50 p-4 rounded-xl space-y-2 text-sm text-slate-700">
+                <p><strong>Chosen Pet:</strong> <span id="review-pet"></span></p>
+                <p><strong>Applicant Name:</strong> <span id="review-name"></span></p>
+                <p><strong>Contact Email:</strong> <span id="review-email"></span></p>
+                <p><strong>Housing:</strong> <span id="review-housing"></span></p>
+              </div>
+              <div class="flex justify-between pt-4">
+                <button type="button" onclick="goToFormStep(2)" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-5 py-2.5 rounded-lg transition"><i class="fa-solid fa-arrow-left mr-1"></i> Edit Details</button>
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold px-6 py-2.5 rounded-lg transition">Submit Application</button>
+              </div>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE 6: SUCCESS STORIES (SLIDER) -->
+    <section id="page-stories" class="page-section fade-in py-10">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl font-extrabold text-slate-900">Happy Tails & Success Stories</h2>
+          <p class="text-slate-600 mt-2">Read inspiring transformation stories from our community.</p>
+        </div>
+
+        <!-- Slider Container -->
+        <div class="relative bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <div id="slider-content" class="p-8 sm:p-12 text-center transition-all duration-300">
+            <!-- Dynamic slide injected by JavaScript -->
+          </div>
+
+          <!-- Slider Navigation Arrows -->
+          <button onclick="prevSlide()" class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button onclick="nextSlide()" class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <!-- Pagination Dots -->
+        <div id="slider-dots" class="flex justify-center gap-2 mt-4"></div>
+      </div>
+    </section>
+
+    <!-- PAGE 7: CONTACT US -->
+    <section id="page-contact" class="page-section fade-in py-10">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl font-extrabold text-slate-900">Get In Touch</h2>
+          <p class="text-slate-600 mt-2">Questions regarding adoption or volunteering? Send us a message.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Direct Info -->
+          <div class="space-y-6">
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-location-dot"></i></div>
+              <div>
+                <h4 class="font-bold text-slate-900">Shelter Location</h4>
+                <p class="text-slate-600 text-sm mt-1">123 Rescue Way, Haven City, HC 90210</p>
+              </div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-start gap-4">
+              <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl shrink-0"><i class="fa-solid fa-envelope"></i></div>
+              <div>
+                <h4 class="font-bold text-slate-900">Email Inquiry</h4>
+                <p class="text-slate-600 text-sm mt-1">adopt@pawsomehaven.org</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <form onsubmit="alert('Thank you for contacting us! We will reply shortly.'); this.reset(); return false;" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Your Name</label>
+              <input type="text" required class="w-full p-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Your Email</label>
+              <input type="email" required class="w-full p-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-1">Message</label>
+              <textarea rows="4" required class="w-full p-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-amber-500 focus:outline-none text-sm"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-3 rounded-lg transition">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-slate-900 text-slate-400 py-10 mt-auto border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm space-y-4">
+      <div class="flex items-center justify-center gap-2 text-white font-bold text-lg">
+        <i class="fa-solid fa-paw text-amber-500"></i> PawsomeHaven
+      </div>
+      <p>&copy; 2026 Pawsome Haven Adoption Portal. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    /* ----------------------------------------------------
+       1. DATA ARRAYS (PETS & STORIES)
+    ---------------------------------------------------- */
+    const petsData = [
+      {
+        id: "pet-1",
+        name: "Bella",
+        type: "Dog",
+        breed: "Golden Retriever",
+        ageGroup: "Young",
+        ageText: "1 year old",
+        gender: "Female",
+        image: "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=600&q=80",
+        description: "Friendly, high-energy puppy who loves play fetch and go on long park walks.",
+        vaccinated: true
+      },
+      {
+        id: "pet-2",
+        name: "Milo",
+        type: "Cat",
+        breed: "Tabby Cat",
+        ageGroup: "Adult",
+        ageText: "3 years old",
+        gender: "Male",
+        image: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=600&q=80",
+        description: "Quiet and gentle house cat who enjoys sunny windowsills and quiet cuddles.",
+        vaccinated: true
+      },
+      {
+        id: "pet-3",
+        name: "Barnaby",
+        type: "Small",
+        breed: "Holland Lop Rabbit",
+        ageGroup: "Young",
+        ageText: "8 months old",
+        gender: "Male",
+        image: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&w=600&q=80",
+        description: "Adorable indoor bunny with an affectionate demeanor. Litter box trained.",
+        vaccinated: true
+      },
+      {
+        id: "pet-4",
+        name: "Daisy",
+        type: "Dog",
+        breed: "Beagle Mix",
+        ageGroup: "Senior",
+        ageText: "6 years old",
+        gender: "Female",
+        image: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=600&q=80",
+        description: "Calm companion dog looking for a quiet home. Fully trained and great with kids.",
+        vaccinated: true
+      }
+    ];
+
+    const successStories = [
+      {
+        petName: "Luna (formerly Spot)",
+        adopter: "Sarah & David M.",
+        image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+        text: "Adopting Luna was the best decision we ever made! She settled into our family instantly."
+      },
+      {
+        petName: "Oliver",
+        adopter: "Jessica T.",
+        image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
+        text: "The multi-step process was so easy. Oliver is now the undisputed ruler of our living room!"
+      }
+    ];
+
+    /* ----------------------------------------------------
+       2. LOCAL STORAGE (FAVORITES) MANAGEMENT
+    ---------------------------------------------------- */
+    let favorites = JSON.parse(localStorage.getItem('pawsome_favorites')) || [];
+    let favoritesOnlyFilter = false;
+
+    function saveFavorites() {
+      localStorage.setItem('pawsome_favorites', JSON.stringify(favorites));
+      updateFavBadges();
+    }
+
+    function toggleFavorite(petId) {
+      if (favorites.includes(petId)) {
+        favorites = favorites.filter(id => id !== petId);
+      } else {
+        favorites.push(petId);
+      }
+      saveFavorites();
+      applyFilters();
+    }
+
+    function updateFavBadges() {
+      document.getElementById('fav-badge').innerText = favorites.length;
+      document.getElementById('mobile-fav-badge').innerText = favorites.length;
+    }
+
+    /* ----------------------------------------------------
+       3. NAVIGATION & SPA TABS
+    ---------------------------------------------------- */
+    function navigateTo(pageId) {
+      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById(`page-${pageId}`);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-amber-600', 'font-bold'));
+      const activeNav = document.getElementById(`nav-${pageId}`);
+      if (activeNav) activeNav.classList.add('text-amber-600', 'font-bold');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    }
+
+    /* ----------------------------------------------------
+       4. PET GRID & FILTERING
+    ---------------------------------------------------- */
+    function applyFilters() {
+      const searchValue = document.getElementById('filter-search').value.toLowerCase();
+      const typeValue = document.getElementById('filter-type').value;
+      const ageValue = document.getElementById('filter-age').value;
+
+      const filtered = petsData.filter(pet => {
+        const matchesSearch = pet.name.toLowerCase().includes(searchValue) || pet.breed.toLowerCase().includes(searchValue);
+        const matchesType = (typeValue === 'all') || (pet.type === typeValue);
+        const matchesAge = (ageValue === 'all') || (pet.ageGroup === ageValue);
+        const matchesFav = !favoritesOnlyFilter || favorites.includes(pet.id);
+
+        return matchesSearch && matchesType && matchesAge && matchesFav;
+      });
+
+      renderPetGrid(filtered);
+    }
+
+    function toggleFavoritesOnly() {
+      favoritesOnlyFilter = !favoritesOnlyFilter;
+      const btnText = document.getElementById('fav-toggle-text');
+      btnText.innerText = favoritesOnlyFilter ? "Show All Pets" : "Show Favorites Only";
+      applyFilters();
+    }
+
+    function setFavoriteFilter(val) {
+      favoritesOnlyFilter = val;
+      const btnText = document.getElementById('fav-toggle-text');
+      btnText.innerText = favoritesOnlyFilter ? "Show All Pets" : "Show Favorites Only";
+      applyFilters();
+    }
+
+    function renderPetGrid(pets) {
+      const grid = document.getElementById('pets-grid');
+      const emptyMsg = document.getElementById('no-pets-msg');
+      grid.innerHTML = '';
+
+      if (pets.length === 0) {
+        emptyMsg.classList.remove('hidden');
+        return;
+      }
+      emptyMsg.classList.add('hidden');
+
+      pets.forEach(pet => {
+        const isFav = favorites.includes(pet.id);
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col";
+        
+        card.innerHTML = `
+          <div class="relative h-48 bg-slate-100 overflow-hidden">
+            <img src="${pet.image}" alt="${pet.name}" class="w-full h-full object-cover">
+            <button onclick="toggleFavorite('${pet.id}')" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/80 hover:bg-white backdrop-blur flex items-center justify-center transition shadow">
+              <i class="fa-${isFav ? 'solid' : 'regular'} fa-heart text-${isFav ? 'red-500' : 'slate-400'}"></i>
+            </button>
+          </div>
+          <div class="p-5 flex-grow flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="text-xl font-bold text-slate-900">${pet.name}</h3>
+                <span class="text-xs bg-amber-100 text-amber-800 font-semibold px-2.5 py-0.5 rounded-full">${pet.type}</span>
+              </div>
+              <p class="text-sm text-slate-500 mb-3">${pet.breed} • ${pet.ageText}</p>
+              <p class="text-sm text-slate-600 line-clamp-2 mb-4">${pet.description}</p>
+            </div>
+            <div class="flex gap-2 pt-2">
+              <button onclick="openPetModal('${pet.id}')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 rounded-lg text-sm transition">View Details</button>
+              <button onclick="selectPetForAdoption('${pet.id}')" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 rounded-lg text-sm transition">Adopt</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    /* ----------------------------------------------------
+       5. PET PROFILE MODAL
+    ---------------------------------------------------- */
+    function openPetModal(petId) {
+      const pet = petsData.find(p => p.id === petId);
+      if (!pet) return;
+
+      const modalContent = document.getElementById('pet-modal-content');
+      modalContent.innerHTML = `
+        <img src="${pet.image}" alt="${pet.name}" class="w-full h-64 object-cover">
+        <div class="p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-2xl font-bold text-slate-900">${pet.name}</h3>
+              <p class="text-slate-500 text-sm">${pet.breed} • ${pet.gender}</p>
+            </div>
+            <span class="bg-amber-100 text-amber-800 text-xs font-bold px-3 py-1 rounded-full">${pet.ageText}</span>
+          </div>
+          <p class="text-slate-600 mb-6 leading-relaxed">${pet.description}</p>
+          <div class="flex justify-end gap-3 border-t pt-4">
+            <button onclick="closePetModal()" class="px-4 py-2 rounded-lg border text-slate-600 font-semibold text-sm">Close</button>
+            <button onclick="closePetModal(); selectPetForAdoption('${pet.id}');" class="px-5 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white font-semibold text-sm">Apply for ${pet.name}</button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('pet-modal').classList.remove('hidden');
+    }
+
+    function closePetModal() {
+      document.getElementById('pet-modal').classList.add('hidden');
+    }
+
+    /* ----------------------------------------------------
+       6. CARE TIPS TAB CONTROL
+    ---------------------------------------------------- */
+    function switchCareTab(tabKey) {
+      document.querySelectorAll('.care-tab-btn').forEach(btn => {
+        btn.classList.remove('border-amber-500', 'text-amber-600');
+        btn.classList.add('border-transparent', 'text-slate-500');
+      });
+      document.querySelectorAll('.care-tab-content').forEach(c => c.classList.add('hidden'));
+
+      document.getElementById(`care-tab-${tabKey}`).classList.add('border-amber-500', 'text-amber-600');
+      document.getElementById(`care-content-${tabKey}`).classList.remove('hidden');
+    }
+
+    /* ----------------------------------------------------
+       7. MULTI-STEP ADOPTION FORM
+    ---------------------------------------------------- */
+    let currentStep = 1;
+
+    function populatePetSelectOptions() {
+      const select = document.getElementById('form-pet-select');
+      select.innerHTML = '';
+      petsData.forEach(pet => {
+        const opt = document.createElement('option');
+        opt.value = pet.id;
+        opt.innerText = `${pet.name} (${pet.breed})`;
+        select.appendChild(opt);
+      });
+    }
+
+    function selectPetForAdoption(petId) {
+      navigateTo('application');
+      document.getElementById('form-pet-select').value = petId;
+    }
+
+    function goToFormStep(step) {
+      if (step > currentStep && !validateCurrentStep(currentStep)) return;
+
+      currentStep = step;
+      document.querySelectorAll('.form-step').forEach(s => s.classList.add('hidden'));
+      document.getElementById(`form-step-${step}`).classList.remove('hidden');
+
+      // Update indicators
+      const progressLine = document.getElementById('progress-line');
+      progressLine.style.width = step === 1 ? '0%' : step === 2 ? '50%' : '100%';
+
+      for (let i = 1; i <= 3; i++) {
+        const dot = document.getElementById(`step-dot-${i}`);
+        if (i <= step) {
+          dot.className = "w-8 h-8 rounded-full bg-amber-500 text-white font-bold flex items-center justify-center text-sm shadow";
+        } else {
+          dot.className = "w-8 h-8 rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center text-sm";
+        }
+      }
+
+      if (step === 3) {
+        const petId = document.getElementById('form-pet-select').value;
+        const pet = petsData.find(p => p.id === petId);
+        document.getElementById('review-pet').innerText = pet ? pet.name : 'N/A';
+        document.getElementById('review-name').innerText = document.getElementById('applicant-name').value;
+        document.getElementById('review-email').innerText = document.getElementById('applicant-email').value;
+        document.getElementById('review-housing').innerText = document.getElementById('housing-type').value;
+      }
+    }
+
+    function validateCurrentStep(step) {
+      if (step === 1) {
+        const name = document.getElementById('applicant-name').value.trim();
+        const email = document.getElementById('applicant-email').value.trim();
+        if (!name || !email) {
+          alert('Please fill out all required personal details.');
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      alert('Application Submitted Successfully! Our team will contact you within 24-48 hours.');
+      document.getElementById('adoption-form').reset();
+      goToFormStep(1);
+      navigateTo('home');
+    }
+
+    /* ----------------------------------------------------
+       8. SUCCESS STORIES CAROUSEL
+    ---------------------------------------------------- */
+    let currentSlide = 0;
+
+    function renderSlide() {
+      const container = document.getElementById('slider-content');
+      const dotsContainer = document.getElementById('slider-dots');
+      const story = successStories[currentSlide];
+
+      container.innerHTML = `
+        <div class="flex flex-col items-center max-w-lg mx-auto">
+          <img src="${story.image}" alt="${story.adopter}" class="w-20 h-20 rounded-full object-cover border-4 border-amber-100 shadow mb-4">
+          <p class="text-slate-600 italic mb-4 text-base sm:text-lg">"${story.text}"</p>
+          <h4 class="font-bold text-slate-900">${story.adopter}</h4>
+          <span class="text-xs text-amber-600 font-semibold mt-0.5">Adopted ${story.petName}</span>
+        </div>
+      `;
+
+      dotsContainer.innerHTML = '';
+      successStories.forEach((_, idx) => {
+        const dot = document.createElement('button');
+        dot.className = `w-2.5 h-2.5 rounded-full ${idx === currentSlide ? 'bg-amber-500 w-6' : 'bg-slate-300'} transition-all`;
+        dot.onclick = () => { currentSlide = idx; renderSlide(); };
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % successStories.length;
+      renderSlide();
+    }
+
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + successStories.length) % successStories.length;
+      renderSlide();
+    }
+
+    /* ----------------------------------------------------
+       9. APP INITIALIZATION
+    ---------------------------------------------------- */
+    window.addEventListener('DOMContentLoaded', () => {
+      updateFavBadges();
+      applyFilters();
+      populatePetSelectOptions();
+      renderSlide();
+    });
+  </script>
+</body>
+</html>
